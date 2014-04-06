@@ -31,6 +31,22 @@ CGFloat const HEIGHT = 40.f;
     return self;
 }
 
+-(void) setDefaultBackgroundColor:(UIColor *)defaultBackgroundColor {
+    _defaultBackgroundColor = defaultBackgroundColor;
+    if(!self.errorMessage && !self.warningMessage) self.backgroundColor = defaultBackgroundColor;
+}
+
+-(void) setErrorBackgroundColor:(UIColor *)errorBackgroundColor {
+    _errorBackgroundColor = errorBackgroundColor;
+    if(self.errorMessage) self.backgroundColor = errorBackgroundColor;
+}
+
+-(void) setWarningBackgroundColor:(UIColor *)warningBackgroundColor {
+    _warningBackgroundColor = warningBackgroundColor;
+    if(!self.errorMessage && self.warningMessage) self.backgroundColor = warningBackgroundColor;
+}
+
+
 -(UIFont *) font { return self.label.font; }
 -(void) setFont:(UIFont *)font { self.label.font = font;}
 

@@ -142,6 +142,7 @@
 -(CharStatusBarView *) statusBar {
     if(_statusBar) return _statusBar;
     _statusBar = [[CharStatusBarView alloc] init];
+    _statusBar.defaultBackgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:_statusBar];
     _statusBar.translatesAutoresizingMaskIntoConstraints = NO;
     return _statusBar;
