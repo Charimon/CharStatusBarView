@@ -16,6 +16,11 @@
 
 -(void) receiveError:(NSString *) error animated:(BOOL) animated;
 -(void) receiveWarning:(NSString *) warning animated:(BOOL) animated;
+
+-(void) receiveError:(NSString *) error animated:(BOOL) animated click:(void (^)(void))click;
+-(void) receiveWarning:(NSString *) warning animated:(BOOL) animated click:(void (^)(void))click;
+
+
 -(void) resolveErrorAnimated:(BOOL) animated;
 -(void) resolveWarningAnimated:(BOOL) animated;
 @end

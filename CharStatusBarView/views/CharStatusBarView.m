@@ -10,8 +10,13 @@
 
 @interface CharStatusBarView()
 @property (strong, nonatomic) UILabel * label;
+@property (strong, nonatomic) UIButton * button;
 @property (strong, nonatomic) NSString *errorMessage;
 @property (strong, nonatomic) NSString *warningMessage;
+@property (strong, nonatomic) void (^errorClick)(void);
+@property (strong, nonatomic) void (^warningClick)(void);
+
+
 @property (strong, nonatomic) NSLayoutConstraint *heightConstraint;
 @end
 
@@ -67,6 +72,8 @@ CGFloat const HEIGHT = 40.f;
     if(!self.label) [self setupLabel];
     
     self.errorMessage = error;
+    self.errorClick = NULL;
+    
     if(animated) {
         [UIView animateWithDuration:.4f
                               delay:0
@@ -88,6 +95,8 @@ CGFloat const HEIGHT = 40.f;
     if(!self.label) [self setupLabel];
     
     self.warningMessage = warning;
+    self.warningClick = NULL;
+    
     if(self.errorMessage) return;
     if(animated) {
         [UIView animateWithDuration:.4f
@@ -108,6 +117,7 @@ CGFloat const HEIGHT = 40.f;
 }
 -(void) resolveErrorAnimated:(BOOL) animated {
     self.errorMessage = nil;
+    self.errorClick = NULL;
     
     if(animated) {
         [UIView animateWithDuration:.4f
@@ -127,19 +137,19 @@ CGFloat const HEIGHT = 40.f;
                              [self.superview layoutIfNeeded];
                          } completion:^(BOOL finished){
                              if(!self.warningMessage) {
-                                 [self.label removeFromSuperview];
-                                 self.label = nil;
+                                 [self clearLabel];
                              }
                          }];
     } else {
         self.backgroundColor = self.errorBackgroundColor;
         [self setHeight:STATUS_HEIGHT];
-        [self.label removeFromSuperview];
-        self.label = nil;
+        [self clearLabel];
     }
 }
 -(void) resolveWarningAnimated:(BOOL) animated {
     self.warningMessage = nil;
+    self.warningClick = NULL;
+    
     if(self.errorMessage) return;
     if(animated) {
         [UIView animateWithDuration:.4f
@@ -155,27 +165,49 @@ CGFloat const HEIGHT = 40.f;
                              [self.superview layoutIfNeeded];
                          } completion:^(BOOL finished){
                              if(!self.warningMessage) {
-                                 [self.label removeFromSuperview];
-                                 self.label = nil;
+                                 [self clearLabel];
                              }
                          }];
     } else {
         self.backgroundColor = self.errorBackgroundColor;
         [self setHeight:STATUS_HEIGHT];
-        [self.label removeFromSuperview];
-        self.label = nil;
+        [self clearLabel];
     }
 }
 
+-(void) receiveError:(NSString *) error animated:(BOOL) animated click:(void (^)(void))click {
+    [self receiveError:error animated:animated];
+    self.errorClick = click;
+}
+-(void) receiveWarning:(NSString *) warning animated:(BOOL) animated click:(void (^)(void))click {
+    [self receiveWarning:warning animated:animated];
+    self.warningClick = click;
+}
+
+-(void) clearLabel {
+    [self.label removeFromSuperview];
+    self.label = nil;
+    
+    [self.button removeFromSuperview];
+    self.button = nil;
+    
+    self.warningClick = NULL;
+    self.errorClick = NULL;
+}
 -(void) setupLabel {
     self.label = [[UILabel alloc] initWithFrame:CGRectZero];
     self.label.textColor = [UIColor whiteColor];
-//    self.label.font = AVENIR_MEDIUM(16.f);
+    self.label.font = self.font;
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:self.label];
     
-    NSArray *constraints = @[[NSLayoutConstraint constraintWithItem:self.label
+    self.button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.button addTarget:self action:@selector(buttonClicked) forControlEvents:UIControlEventTouchUpInside];
+    self.button.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.button];
+    
+    [self addConstraints:@[[NSLayoutConstraint constraintWithItem:self.label
                                                           attribute:NSLayoutAttributeLeading
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:self
@@ -203,8 +235,42 @@ CGFloat const HEIGHT = 40.f;
                                                           attribute:NSLayoutAttributeBottom
                                                          multiplier:1.f
                                                            constant:0.f]
-                             ];
+                             ]];
     
-    [self addConstraints:constraints];
+    [self addConstraints:@[[NSLayoutConstraint constraintWithItem:self.button
+                                                        attribute:NSLayoutAttributeLeading
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.label
+                                                        attribute:NSLayoutAttributeLeading
+                                                       multiplier:1.f
+                                                         constant:0.f],
+                           [NSLayoutConstraint constraintWithItem:self.button
+                                                        attribute:NSLayoutAttributeTrailing
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.label
+                                                        attribute:NSLayoutAttributeTrailing
+                                                       multiplier:1.f
+                                                         constant:0.f],
+                           [NSLayoutConstraint constraintWithItem:self.button
+                                                        attribute:NSLayoutAttributeTop
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.label
+                                                        attribute:NSLayoutAttributeTop
+                                                       multiplier:1.f
+                                                         constant:0.f],
+                           [NSLayoutConstraint constraintWithItem:self.button
+                                                        attribute:NSLayoutAttributeBottom
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:self.label
+                                                        attribute:NSLayoutAttributeBottom
+                                                       multiplier:1.f
+                                                         constant:0.f]
+                           ]];
 }
+
+-(void) buttonClicked {
+    if(self.errorClick) self.errorClick();
+    else if (self.warningClick) self.warningClick();
+}
+
 @end

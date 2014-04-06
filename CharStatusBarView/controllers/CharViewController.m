@@ -12,8 +12,11 @@
 @interface CharViewController ()
 @property (strong, nonatomic) CharStatusBarView *statusBar;
 @property (strong, nonatomic) UIButton *showErrorButton;
+@property (strong, nonatomic) UIButton *showErrorSelectorButton;
 @property (strong, nonatomic) UIButton *hideErrorButton;
+
 @property (strong, nonatomic) UIButton *showWarningButton;
+@property (strong, nonatomic) UIButton *showWarningSelectorButton;
 @property (strong, nonatomic) UIButton *hideWarningButton;
 @end
 
@@ -69,6 +72,29 @@
                                                               constant:100.f],
                                 ]];
     
+    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.showErrorSelectorButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.showErrorSelectorButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.showErrorSelectorButton
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.showErrorButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:10.f],
+                                ]];
+    
     [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.hideErrorButton
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
@@ -86,7 +112,7 @@
                                 [NSLayoutConstraint constraintWithItem:self.hideErrorButton
                                                              attribute:NSLayoutAttributeTop
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.showErrorButton
+                                                                toItem:self.showErrorSelectorButton
                                                              attribute:NSLayoutAttributeBottom
                                                             multiplier:1.f
                                                               constant:10.f],
@@ -112,8 +138,31 @@
                                                                 toItem:self.hideErrorButton
                                                              attribute:NSLayoutAttributeBottom
                                                             multiplier:1.f
+                                                              constant:30.f],
+                                ]];
+    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.showWarningSelectorButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.showWarningSelectorButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.showWarningSelectorButton
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.showWarningButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
                                                               constant:10.f],
                                 ]];
+
     [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.hideWarningButton
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
@@ -131,7 +180,7 @@
                                 [NSLayoutConstraint constraintWithItem:self.hideWarningButton
                                                              attribute:NSLayoutAttributeTop
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.showWarningButton
+                                                                toItem:self.showWarningSelectorButton
                                                              attribute:NSLayoutAttributeBottom
                                                             multiplier:1.f
                                                               constant:10.f],
@@ -162,6 +211,22 @@
     [self.statusBar receiveError:@"Error" animated:YES];
 }
 
+-(UIButton *) showErrorSelectorButton {
+    if(_showErrorSelectorButton) return _showErrorSelectorButton;
+    _showErrorSelectorButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_showErrorSelectorButton addTarget:self action:@selector(showErrorSelectorButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+    _showErrorSelectorButton.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    [_showErrorSelectorButton setTitle:@"Show Error with block" forState:UIControlStateNormal];
+    _showErrorSelectorButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_showErrorSelectorButton];
+    return _showErrorSelectorButton;
+}
+-(void) showErrorSelectorButtonClicked {
+    [self.statusBar receiveError:@"Error CLICK ME!" animated:YES click:^{
+        [self hideErrorButtonClicked];
+    }];
+}
+
 -(UIButton *) hideErrorButton {
     if(_hideErrorButton) return _hideErrorButton;
     _hideErrorButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -188,6 +253,22 @@
 }
 -(void) showWarningButtonClicked {
     [self.statusBar receiveWarning:@"Warning" animated:YES];
+}
+
+-(UIButton *) showWarningSelectorButton {
+    if(_showWarningSelectorButton) return _showWarningSelectorButton;
+    _showWarningSelectorButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_showWarningSelectorButton addTarget:self action:@selector(showWarningSelectorButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+    _showWarningSelectorButton.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    [_showWarningSelectorButton setTitle:@"Show Warning with block" forState:UIControlStateNormal];
+    _showWarningSelectorButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:_showWarningSelectorButton];
+    return _showWarningSelectorButton;
+}
+-(void) showWarningSelectorButtonClicked {
+    [self.statusBar receiveWarning:@"Warning CLICK ME!" animated:YES click:^{
+        [self hideWarningButtonClicked];
+    }];
 }
 
 -(UIButton *) hideWarningButton {
