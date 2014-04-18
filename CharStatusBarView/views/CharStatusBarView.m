@@ -51,9 +51,10 @@ CGFloat const HEIGHT = 40.f;
     if(!self.errorMessage && self.warningMessage) self.backgroundColor = warningBackgroundColor;
 }
 
-
--(UIFont *) font { return self.label.font; }
--(void) setFont:(UIFont *)font { self.label.font = font;}
+-(void) setFont:(UIFont *)font {
+    _font = font;
+    self.label.font = font;
+}
 
 -(CGSize) intrinsicContentSize {
     return CGSizeMake(UIViewNoIntrinsicMetric, STATUS_HEIGHT);
