@@ -208,7 +208,10 @@
     return _showErrorButton;
 }
 -(void) showErrorButtonClicked {
-    [self.statusBar receiveError:@"Error" animated:YES];
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"ERROR";
+    label.textAlignment = NSTextAlignmentCenter;
+    [self.statusBar receiveError:label click:NULL];
 }
 
 -(UIButton *) showErrorSelectorButton {
@@ -222,7 +225,10 @@
     return _showErrorSelectorButton;
 }
 -(void) showErrorSelectorButtonClicked {
-    [self.statusBar receiveError:@"Error CLICK ME!" animated:YES click:^{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"ERROR CLICK ME!";
+    label.textAlignment = NSTextAlignmentCenter;
+    [self.statusBar receiveError:label click:^{
         [self hideErrorButtonClicked];
     }];
 }
@@ -238,7 +244,7 @@
     return _hideErrorButton;
 }
 -(void) hideErrorButtonClicked {
-    [self.statusBar resolveErrorAnimated:YES];
+    [self.statusBar resolveError];
 }
 
 -(UIButton *) showWarningButton {
@@ -252,7 +258,10 @@
     return _showWarningButton;
 }
 -(void) showWarningButtonClicked {
-    [self.statusBar receiveWarning:@"Warning" animated:YES];
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"Warning";
+    label.textAlignment = NSTextAlignmentCenter;
+    [self.statusBar receiveWarning:label click:NULL];
 }
 
 -(UIButton *) showWarningSelectorButton {
@@ -266,7 +275,10 @@
     return _showWarningSelectorButton;
 }
 -(void) showWarningSelectorButtonClicked {
-    [self.statusBar receiveWarning:@"Warning CLICK ME!" animated:YES click:^{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"Warning CLICK ME!";
+    label.textAlignment = NSTextAlignmentCenter;
+    [self.statusBar receiveWarning:label click:^{
         [self hideWarningButtonClicked];
     }];
 }
@@ -282,7 +294,7 @@
     return _hideWarningButton;
 }
 -(void) hideWarningButtonClicked {
-    [self.statusBar resolveWarningAnimated:YES];
+    [self.statusBar resolveWarning];
     
 }
 
