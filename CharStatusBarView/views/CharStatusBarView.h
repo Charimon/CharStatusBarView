@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CharStatusBarView : UIView
+@property (nonatomic) CGFloat errorHeight;
 @property (strong, nonatomic) UIColor *defaultBackgroundColor;
 @property (strong, nonatomic) UIColor *errorBackgroundColor;
 @property (strong, nonatomic) UIColor *warningBackgroundColor;

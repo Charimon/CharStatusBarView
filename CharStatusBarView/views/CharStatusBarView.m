@@ -38,6 +38,7 @@ CGFloat const HEIGHT = 40.f;
         
         [self addGestureRecognizer:self.tapRecognizer];
         self.clipsToBounds = YES;
+        self.errorHeight = HEIGHT;
     }
     return self;
 }
@@ -101,7 +102,7 @@ CGFloat const HEIGHT = 40.f;
                             options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                          animations:^{
                              self.backgroundColor = self.errorBackgroundColor;
-                             [self setHeight:STATUS_HEIGHT + HEIGHT];
+                             [self setHeight:STATUS_HEIGHT + self.errorHeight];
                              self.errorView.alpha = 1.f;
                              self.warningView.alpha = 0.f;
                              [self.superview layoutIfNeeded];
@@ -140,7 +141,7 @@ CGFloat const HEIGHT = 40.f;
                                  self.backgroundColor = self.warningBackgroundColor;
                                  self.warningView.alpha = 1.f;
                              }
-                             [self setHeight:STATUS_HEIGHT + HEIGHT];
+                             [self setHeight:STATUS_HEIGHT + self.errorHeight];
                              [self.superview layoutIfNeeded];
                          } completion:^(BOOL finished){
                              self.warningClick = click;
